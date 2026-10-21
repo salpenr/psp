@@ -1,0 +1,262 @@
+{
+  "psp_version": "0.2-r1",
+  "profile": "psp-v0.2-baseline",
+  "evaluation_time": "2026-09-15T18:31:38.271270+00:00",
+  "subject_claim": "b2e839e0f125",
+  "claim_domain": "store=<home>\\psp\\v0.2\\experiment\\20260915-133136\\psp-v0.2.db; operation=b2e839e0f125; scope=all participating claims at T=2026-09-15T18:31:38.271270+00:00",
+  "discovery_domain": "all claims in store <home>\\psp\\v0.2\\experiment\\20260915-133136\\psp-v0.2.db, every state, every project/target/actor string",
+  "discovery_rule": "enumerate every CLAIMED row; identity evaluated per candidate by M-03; no representation filter (baseline §4)",
+  "discovery_table": {
+    "LIVE": {
+      "support": [
+        "CLAIMED (own instance token)"
+      ],
+      "defeat": [
+        "RELEASED (own token)",
+        "OPERATOR_RELEASE (operator class)",
+        "instance process gone (host probe) -> UNRESOLVED"
+      ]
+    },
+    "INACTIVE": {
+      "support": [
+        "RELEASED (own token)",
+        "OPERATOR_RELEASE"
+      ],
+      "defeat": [
+        "absence of both -> not INACTIVE"
+      ]
+    },
+    "SAME": {
+      "support": [
+        "file identity equal (stat)",
+        "resolved path equal when neither exists (path-only)"
+      ],
+      "defeat": [
+        "file identity differs"
+      ]
+    },
+    "DISTINCT": {
+      "support": [
+        "file identity differs (both exist)",
+        "resolved path differs when neither exists (path-only)"
+      ],
+      "defeat": [
+        "file identity equal"
+      ]
+    },
+    "CLASS": {
+      "support": [
+        "declared intent (self-state, provisional)",
+        "own READY with changed hash -> WRITE (observed)"
+      ],
+      "defeat": [
+        "observed WRITE over declared READ/REVIEW"
+      ]
+    },
+    "REVISION": {
+      "support": [
+        "sha256 at claim",
+        "sha256 at READY",
+        "sha256 at evaluation"
+      ],
+      "defeat": [
+        "current hash differs from bound hash"
+      ]
+    },
+    "INSTANCE": {
+      "support": [
+        "distinct PSP-minted tokens"
+      ],
+      "defeat": [
+        "same token used concurrently from two live pids -> TOKEN_SHARED"
+      ]
+    }
+  },
+  "candidates_enumerated": 13,
+  "subject": {
+    "actor": "grok",
+    "instance_id": "a3541249c72a475d844cf90145a0d0e7",
+    "op_class": "WRITE",
+    "class_evidence": "declared",
+    "target": "./X.md",
+    "resolved": "<home>\\psp\\v0.2\\experiment\\20260915-133136\\workspace\\x.md",
+    "fileid_at_claim": "<dev>:153403862309761934",
+    "fileid_now": "<dev>:153403862309761934",
+    "revision_at_claim": "54be79a24597fe64009869d83bad93c14d6667f109315c3e676412705226339b",
+    "revision_now": "54be79a24597fe64009869d83bad93c14d6667f109315c3e676412705226339b",
+    "lifecycle": {
+      "state": "LIVE",
+      "evidence": {
+        "rule": "accepted CLAIMED, no RELEASE, no OPERATOR_RELEASE, probe unavailable",
+        "host": "<host>",
+        "pid": 2884,
+        "pid_kind": "transient",
+        "age_seconds": 0.0
+      },
+      "annotations": [
+        "PROBE_UNAVAILABLE"
+      ]
+    },
+    "review_state": null,
+    "relation": "unspecified",
+    "relates_to": null
+  },
+  "observations_admitted": [
+    {
+      "claim_id": "a4caaf07f87d",
+      "actor": "claude",
+      "instance_id": "5b32b7ce3f1f4b4a803bd3882f37094d",
+      "op_class": "WRITE",
+      "class_evidence": "declared",
+      "lifecycle": "LIVE",
+      "identity": {
+        "relation": "SAME",
+        "evidence_class": "protocol-observation",
+        "rule": "file identity equal"
+      },
+      "same_instance": false,
+      "row": "WRITE/WRITE"
+    }
+  ],
+  "observations_rejected": [
+    {
+      "claim_id": "766265d12a28",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    },
+    {
+      "claim_id": "d6e498fe0c54",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    },
+    {
+      "claim_id": "0e8e579f8ffa",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    },
+    {
+      "claim_id": "c7bcb78fa938",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    },
+    {
+      "claim_id": "cc2dfa4805b0",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    },
+    {
+      "claim_id": "fac5b507c375",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    },
+    {
+      "claim_id": "5a3ca080ed5f",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    },
+    {
+      "claim_id": "41e87b9d2c8a",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "UNRESOLVED"
+    },
+    {
+      "claim_id": "95a6e2ca7056",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    },
+    {
+      "claim_id": "93698d6b6a2f",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    },
+    {
+      "claim_id": "f70a2c57b5c5",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    },
+    {
+      "claim_id": "23d0bc6648f3",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    }
+  ],
+  "established_transitions": [
+    {
+      "claim_id": "23d0bc6648f3",
+      "instance_id": "b0bf25abece44fa68e4de2c5a7b09598",
+      "from": "afd8039ec74b4030ff0f818b9ab2c61f883fb706e17d0c7dc31f182c5a32a85b",
+      "to": "54be79a24597fe64009869d83bad93c14d6667f109315c3e676412705226339b",
+      "seq": 31,
+      "ts": "2026-09-15T18:31:38.037561+00:00"
+    }
+  ],
+  "lineage": [
+    {
+      "proposition": "subject revision now",
+      "source": "filesystem",
+      "observation": "sha256 at evaluation",
+      "value": "54be79a24597fe64009869d83bad93c14d6667f109315c3e676412705226339b"
+    },
+    {
+      "proposition": "identity",
+      "source": "filesystem",
+      "observation": "realpath+normcase and stat file identity",
+      "transformation": "identity_relation()",
+      "note": "reference strings recorded for display only"
+    },
+    {
+      "proposition": "instance",
+      "source": "PSP-minted token",
+      "observation": "token presented on events",
+      "transformation": "none"
+    },
+    {
+      "proposition": "class",
+      "source": "participant declaration then own READY",
+      "observation": "declared"
+    },
+    {
+      "proposition": "lifecycle",
+      "source": "store events + host process probe",
+      "observation": {
+        "rule": "accepted CLAIMED, no RELEASE, no OPERATOR_RELEASE, probe unavailable",
+        "host": "<host>",
+        "pid": 2884,
+        "pid_kind": "transient",
+        "age_seconds": 0.0
+      }
+    }
+  ],
+  "conflicts": [
+    {
+      "claim_id": "a4caaf07f87d",
+      "actor": "claude",
+      "instance_id": "5b32b7ce3f1f4b4a803bd3882f37094d",
+      "op_class": "WRITE",
+      "row": "WRITE/WRITE",
+      "lifecycle": {
+        "rule": "accepted CLAIMED, no RELEASE, no OPERATOR_RELEASE, probe unavailable",
+        "host": "<host>",
+        "pid": 36892,
+        "pid_kind": "transient",
+        "age_seconds": 0.1
+      }
+    }
+  ],
+  "unresolved": [],
+  "answer_key_row": "WRITE/WRITE",
+  "annotations": [
+    "HISTORICAL_CONFLICT",
+    "PROBE_UNAVAILABLE"
+  ],
+  "signal": "CONFLICT",
+  "enforcement": "none (observational); --enforce-exit not set",
+  "visible_limits": [
+    "discovery = participating claims in this store only; non-participating writers never observed as workers (KG-07)",
+    "instance = token possession, not identity (KG-01, KG-14)",
+    "liveness probe is host-local and pid-based (KG-05)",
+    "class before first observation rests on declared intent (KG-02)",
+    "pre-creation identity rests on path (KG-12)"
+  ],
+  "evaluation_id": 38
+}

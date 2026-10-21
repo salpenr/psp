@@ -1,0 +1,119 @@
+diff --git a/v0.2/psp2.py b/v0.2/psp2.py
+index eb9df78..dfe085b 100644
+--- a/v0.2/psp2.py
++++ b/v0.2/psp2.py
+@@ -34,7 +34,8 @@ import sys
+ import uuid
+ from datetime import datetime, timezone
+ 
+-VERSION = "0.2-r1"
++VERSION = "0.2-r2"
++HASH_DOMAIN = "psp/0.2-r1"  # pinned: r2 must still verify stores written by r1 (evidence); do not bump with VERSION
+ PROFILE = "psp-v0.2-baseline"
+ GENESIS = "0" * 64
+ CLASSES = ("READ", "WRITE", "REVIEW")
+@@ -174,7 +175,7 @@ ROW_FIELDS = ("ts", "kind", "claim_id", "instance_id", "actor", "recorded_by", "
+ 
+ def event_hash(prev_hash: str, seq: int, row: dict) -> str:
+     payload = json.dumps({k: row.get(k) for k in ROW_FIELDS}, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+-    return hashlib.sha256(f"psp/{VERSION}|{prev_hash}|{seq}|{payload}".encode("utf-8")).hexdigest()
++    return hashlib.sha256(f"{HASH_DOMAIN}|{prev_hash}|{seq}|{payload}".encode("utf-8")).hexdigest()
+ 
+ 
+ class PSP2:
+@@ -239,14 +240,14 @@ class PSP2:
+                             "recorded_by": r["recorded_by"], "project": r["project"], "target": r["target"], "root": r["root"],
+                             "resolved": r["resolved"], "fileid_at_claim": r["fileid"], "revision_at_claim": r["revision"],
+                             "op_class": r["op_class"], "class_evidence": r["class_evidence"], "relation": r["relation"],
+-                            "relates_to": r["relates_to"], "released": None, "ready": [], "pids": {(r["host"], r["pid"])},
++                            "relates_to": r["relates_to"], "released": None, "ready": [], "pids": {(r["host"], r["pid"], r["pid_kind"] or "process")},
+                             "last_event": r["kind"], "notes": []}
+                 continue
+             c = out.get(cid)
+             if not c:
+                 continue
+             if r["kind"] in ("READY", "NOTE", "RELEASED", "RECLASSIFIED") and r["instance_id"] == c["instance_id"]:
+-                c["pids"].add((r["host"], r["pid"]))
++                c["pids"].add((r["host"], r["pid"], r["pid_kind"] or "process"))
+             if r["kind"] == "RELEASED":
+                 c["released"] = {"seq": r["seq"], "ts": r["ts"], "evidence_class": "self-state", "by": r["recorded_by"]}
+             elif r["kind"] == "OPERATOR_RELEASE":
+@@ -302,6 +303,29 @@ class PSP2:
+         except ValueError:
+             return -1.0
+ 
++    # -- r2: same-working-instance is a relational proposition; a matching token string alone does not establish it
++    def same_instance(self, s: dict, c: dict) -> dict:
++        """'distinct' | 'established' | 'unresolved'.  Baseline §9.2 / §14: SELF_OVERLAP needs evidence that the two claims
++        were made by the same working instance, not merely the same instance string.  Evidence classes (design M-02, KG-01):
++        the same non-transient process presented the token for both claims; or the earlier process is gone and a later
++        non-transient process presents the token (continuity by possession, KG-01).  A transient (CLI) pid cannot tie
++        possession to a process (IN-01), so shared tokens through the CLI are UNRESOLVED (Grok impl-r1 finding IN-03+IN-02)."""
++        if s["instance_id"] != c["instance_id"]:
++            return {"state": "distinct", "rule": "instance tokens differ"}
++        sp, cp = s["pids"], c["pids"]
++        if any(p[2] == "transient" for p in sp | cp):
++            return {"state": "unresolved", "rule": "same token, but a transient (CLI) pid cannot tie possession to a process (IN-01)"}
++        shared = {(p[0], p[1]) for p in sp} & {(p[0], p[1]) for p in cp}
++        if shared:
++            return {"state": "established", "rule": "same token presented by the same process for both claims"}
++        s_alive = [p for p in sp if process_state(p[0], p[1]) == "alive"]
++        c_alive = [p for p in cp if process_state(p[0], p[1]) == "alive"]
++        if s_alive and c_alive:
++            return {"state": "unresolved", "rule": "same token in use by two live processes (TOKEN_SHARED)"}
++        if (s_alive and not c_alive) or (c_alive and not s_alive):
++            return {"state": "established", "rule": "same token; earlier process gone, later process presents it (continuity by possession, KG-01)"}
++        return {"state": "unresolved", "rule": "same token; process states unavailable or both gone"}
++
+     # -- M-04 revisions -------------------------------------------------------------------------
+     def established_transitions(self, resolved: str) -> list[dict]:
+         """READY records on claims that resolve to this artifact: from-revision -> produced revision."""
+@@ -435,9 +459,11 @@ class PSP2:
+             c_fid_now = file_identity(c["resolved"])
+             ident = identity_relation(s["resolved"], s_fid_now, c["resolved"], c_fid_now)
+             pair = (s["op_class"], c["op_class"])
+-            could_conflict = "WRITE" in pair
++            classes_ok = s["op_class"] in CLASSES and c["op_class"] in CLASSES
++            could_conflict = (not classes_ok) or ("WRITE" in pair)  # an unestablished class cannot be assumed compatible (baseline §15; r2 IN-06 repair)
++            same_inst = self.same_instance(s, c)
+             entry = {"claim_id": cid, "actor": c["actor"], "instance_id": c["instance_id"], "op_class": c["op_class"], "class_evidence": c["class_evidence"],
+-                     "lifecycle": life["state"], "identity": ident, "same_instance": c["instance_id"] == s["instance_id"], "row": None}
++                     "lifecycle": life["state"], "identity": ident, "same_instance": same_inst, "row": None}
+             if life["state"] == "INACTIVE":
+                 rejected.append({"claim_id": cid, "reason": "INACTIVE (baseline §18): cannot create live consequence", "identity": ident["relation"]})
+                 if ident["relation"] == "SAME" and could_conflict and c["instance_id"] != s["instance_id"]:
+@@ -456,11 +482,23 @@ class PSP2:
+                     entry["row"] = "identity UNRESOLVED but pair cannot conflict"
+                 continue
+             # SAME artifact from here
+-            if entry["same_instance"]:
++            if not classes_ok:  # r2 IN-06 repair: operation class is a proposition; unresolved class -> UNKNOWN, never a row
++                bad = [x for x, k in ((claim_id, s["op_class"]), (cid, c["op_class"])) if k not in CLASSES]
++                unresolved.append({"proposition": f"operation class({','.join(bad)})", "reason": "class not established (baseline §15, B11)"})
++                entry["row"] = "operation class UNRESOLVED"
++                continue
++            if same_inst["state"] == "established":
+                 entry["row"] = "same working instance: no coordination relationship"
+                 if "SELF_OVERLAP" not in annotations:
+                     annotations.append("SELF_OVERLAP")
+                 continue
++            if same_inst["state"] == "unresolved":  # r2 IN-03+IN-02 repair: matching token string is not evidence of one instance
++                if could_conflict:
++                    unresolved.append({"proposition": f"same working instance({claim_id},{cid})", "reason": same_inst["rule"]})
++                    entry["row"] = "same-instance relationship UNRESOLVED and pair could conflict"
++                else:
++                    entry["row"] = "same-instance relationship UNRESOLVED but pair cannot conflict"
++                continue
+             if "TOKEN_SHARED" in life["annotations"] or "TOKEN_SHARED" in s_life["annotations"]:
+                 if could_conflict:
+                     unresolved.append({"proposition": f"instance distinctness({claim_id},{cid})", "reason": "TOKEN_SHARED"})
+@@ -535,6 +573,9 @@ class PSP2:
+     def _baseline_row(self, s: dict, c: dict, s_rev_now: str | None, s_review_state: dict | None, transitions: list[dict]) -> dict:
+         a, b = s["op_class"], c["op_class"]
+         pair = f"{a}/{b}"
++        if a not in CLASSES or b not in CLASSES:  # r2 IN-06: never let an unestablished class fall into a conflict branch
++            return {"result": "UNRESOLVED", "row": pair, "proposition": f"operation class({s['claim_id'] if a not in CLASSES else c['claim_id']})",
++                    "reason": "class not established (baseline §15, B11)"}
+         if {a, b} <= {"READ", "REVIEW"}:
+             return {"result": "NON-CONFLICT", "row": pair}
+         if a == "WRITE" and b == "WRITE":

@@ -1,0 +1,114 @@
+diff --git a/v0.2/test_psp2.py b/v0.2/test_psp2.py
+index 0d5b484..a2f577b 100644
+--- a/v0.2/test_psp2.py
++++ b/v0.2/test_psp2.py
+@@ -157,7 +157,9 @@ class T_B_AnswerKey(Base):
+                         "revision": w["revision"], "op_class": None, "class_evidence": None, "relation": "unspecified"})
+         self.p.con.execute("COMMIT")
+         e = self.ev(w)
+-        self.assertNotEqual(e["signal"], "CLEAR")  # a NULL class pairs as could-not-conflict? no: it must not be assumed compatible
++        self.assertEqual(e["signal"], "UNKNOWN")  # r2: unestablished class is UNRESOLVED, never a conflict row (B11)
++        self.assertTrue(any(u["proposition"].startswith("operation class(") for u in e["unresolved"]))
++        self.assertEqual(e["conflicts"], [])
+ 
+     def test_B12_declared_read_observed_write(self):
+         r = self.claim("grok", "READ"); v = self.claim("claude", "REVIEW")
+@@ -434,5 +436,98 @@ class T_KG_Falsifiers(Base):
+         e1 = self.ev(w); self.assertIn("ARTIFACT_REPLACED", e1["annotations"]); self.assertNotEqual(f1, e1["subject"]["fileid_now"])
+ 
+ 
++# ---------------------------------------------------------------- impl-r2 regressions (Grok impl-r1 attack, reproduced exactly)
++class T_R2_GrokRegressions(Base):
++    """Two findings from research-notes/psp-v0.1-attack/attack_impl_r1.py, authorized for repair by Ruben 2026-09-15.
++    Each test first states what r1 produced (Grok's HIT) and then asserts the r2 semantics."""
++
++    def _cli_claim(self, actor, op, target, token, db=None):
++        env = os.environ.copy(); env["PSP2_INSTANCE"] = token
++        cmd = [PY, str(HERE / "psp2.py"), "--db", db or self.db, "--json", "claim", "--project", "P", "--as", actor, "--op", op,
++               "--target", target, "--root", str(self.root), "--instance", token]
++        r = subprocess.run(cmd, capture_output=True, text=True, env=env)
++        self.assertEqual(r.returncode, 0, r.stderr)
++        first, rest = r.stdout.split("\n", 1)
++        return json.loads(first), json.loads(rest)
++
++    def test_R2_grok_IN03_IN02_shared_token_two_cli_processes_is_unknown(self):
++        # r1: two CLI processes sharing --instance, both WRITE -> CLEAR + SELF_OVERLAP (Grok HIT 'IN-03').
++        tok = "cccccccccccccccc"
++        c1, _ = self._cli_claim("w", "WRITE", "X.md", tok)
++        c2, basis = self._cli_claim("w", "WRITE", "X.md", tok)
++        self.assertEqual(basis["signal"], "UNKNOWN")
++        self.assertNotIn("SELF_OVERLAP", basis["annotations"])
++        props = [u["proposition"] for u in basis["unresolved"]]
++        self.assertTrue(any(p.startswith("same working instance(") for p in props), props)
++        adm = basis["observations_admitted"][0]
++        self.assertEqual(adm["same_instance"]["state"], "unresolved")
++        self.assertIn("transient", adm["same_instance"]["rule"])
++
++    def test_R2_shared_token_read_read_still_clear(self):
++        # the relationship is unresolved but cannot change the answer for READ/READ -> CLEAR, recorded as unresolved-but-harmless
++        tok = "cccccccccccccccc"
++        self._cli_claim("w", "READ", "X.md", tok); _, basis = self._cli_claim("w", "READ", "X.md", tok)
++        self.assertEqual(basis["signal"], "CLEAR")
++        self.assertIn("UNRESOLVED but pair cannot conflict", basis["observations_admitted"][0]["row"])
++
++    def test_R2_same_process_same_token_still_self_overlap(self):
++        # IN-02 semantics preserved: one module-API worker, sequential REVIEW then WRITE under one token
++        tok = "ffffffffffffffff"
++        self.claim("claude", "REVIEW", instance=tok); w = self.claim("claude", "WRITE", instance=tok)
++        e = self.ev(w); self.assertEqual(e["signal"], "CLEAR"); self.assertIn("SELF_OVERLAP", e["annotations"])
++        self.assertEqual(e["observations_admitted"][0]["same_instance"]["state"], "established")
++
++    def test_R2_restart_continuity_by_token_is_established(self):
++        # KG-01 assumption kept: earlier process gone, later non-transient process presents the same token -> same instance
++        tok = "abababababababab"
++        script = ("import sys; sys.path.insert(0,%r); import psp2; p=psp2.PSP2(%r); p.claim('P','claude','REVIEW','X.md',root=%r,instance_id=%r)"
++                  % (str(HERE), self.db, str(self.root), tok))
++        subprocess.run([PY, "-c", script], check=True, capture_output=True)  # that process is gone now
++        w = self.claim("claude", "WRITE", instance=tok)
++        e = self.ev(w); self.assertEqual(e["signal"], "CLEAR"); self.assertIn("SELF_OVERLAP", e["annotations"])
++        self.assertIn("continuity", e["observations_admitted"][0]["same_instance"]["rule"])
++
++    def test_R2_grok_IN06_null_class_direct_insert_is_unknown(self):
++        # r1: NULL op_class vs WRITE -> CONFLICT via the REVIEW/WRITE branch (Grok HIT 'IN-06'). Reproduced with his raw insert.
++        import sqlite3
++        w = self.claim("grok", "WRITE")
++        conn = sqlite3.connect(self.db)
++        row = conn.execute("SELECT * FROM events ORDER BY seq DESC LIMIT 1").fetchone()
++        cols = [c[1] for c in conn.execute("PRAGMA table_info(events)")]
++        last = dict(zip(cols, row))
++        conn.execute(
++            "INSERT INTO events (ts, kind, claim_id, instance_id, actor, recorded_by, project, target, root, resolved, fileid, revision, "
++            "op_class, class_evidence, relation, relates_to, note, ref_claim, pid, host, pid_kind, data, prev_hash, hash) "
++            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
++            (last["ts"], "CLAIMED", "deadbeef0001", "instnullclass", "attacker", "attacker", "P", "X.md", str(self.root), last["resolved"],
++             last["fileid"], last["revision"], None, "declared", "unspecified", None, None, None, os.getpid(), last["host"], "process",
++             last["data"], last["hash"], "0" * 64))
++        conn.commit(); conn.close()
++        e = self.p.evaluate(w["claim_id"], record=False)
++        self.assertEqual(e["signal"], "UNKNOWN")
++        self.assertEqual(e["conflicts"], [])
++        self.assertIn("operation class(deadbeef0001)", [u["proposition"] for u in e["unresolved"]])
++        self.assertEqual(e["observations_admitted"][0]["row"], "operation class UNRESOLVED")
++
++    def test_R2_baseline_row_guard_direct(self):
++        s = {"claim_id": "s", "op_class": None, "revision_at_claim": "a"}; c = {"claim_id": "c", "op_class": "WRITE", "revision_at_claim": "a"}
++        r = self.p._baseline_row(s, c, "a", None, [])
++        self.assertEqual(r["result"], "UNRESOLVED"); self.assertEqual(r["proposition"], "operation class(s)")
++
++    def test_R2_r1_evidence_store_still_verifies(self):
++        # HASH_DOMAIN pinned: the frozen r1 experiment store must verify under r2 code
++        stores = sorted((HERE / "experiment").glob("*/psp-v0.2.db"))
++        if not stores:
++            self.skipTest("no r1 experiment store present")
++        import shutil
++        copy = self.root / "r1-evidence-copy.db"  # never open the frozen evidence store itself: the constructor writes schema/pragma
++        shutil.copyfile(stores[0], copy)
++        q = P.PSP2(str(copy))
++        try:
++            v = q.verify(); self.assertTrue(v["ok"], v); self.assertGreaterEqual(v["events"], 38)
++        finally:
++            q.close()
++
++
+ if __name__ == "__main__":
+     unittest.main()

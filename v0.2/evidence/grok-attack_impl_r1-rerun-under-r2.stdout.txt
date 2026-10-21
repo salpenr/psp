@@ -1,0 +1,11 @@
+psp2 0.2-r2
+[miss] IN-06 NULL op_class vs WRITE yields CONFLICT not UNKNOWN
+[HIT ] IN-01 CLI claim stays LIVE after CLI pid exits (PROBE_UNAVAILABLE, not INSTANCE_PROCESS_GONE)
+[miss] IN-04 path-stable replace: current fileid SAME + ARTIFACT_REPLACED (not false DISTINCT)
+[HIT ] KG-13 rename: ARTIFACT_MOVED dead; identity UNRESOLVED / UNKNOWN (freeze-recorded)
+[HIT ] IN-03 same token via two CLI processes: TOKEN_SHARED does not fire (transient pids)
+[HIT ] S23 LIVE REVIEW + LIVE WRITE same artifact = CONFLICT owner sentence
+[HIT ] KG-09 two stores, same file: each CLEAR (honest, silent beyond store= in domain)
+[HIT ] IN-02 same token REVIEW then WRITE: SELF_OVERLAP, not CONFLICT row
+
+6/8 hits -> <home>\<private-notes>/psp-v0.1-attack\attack-impl-r1-results.json

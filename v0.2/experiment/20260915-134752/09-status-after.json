@@ -1,0 +1,24 @@
+[
+  {
+    "claim_id": "03ed773e97eb",
+    "actor": "claude",
+    "op_class": "WRITE",
+    "target": "X.md",
+    "lifecycle": "LIVE",
+    "age_seconds": 0.1,
+    "annotations": [
+      "PROBE_UNAVAILABLE"
+    ]
+  },
+  {
+    "claim_id": "b29cdeb70747",
+    "actor": "grok",
+    "op_class": "WRITE",
+    "target": "./X.md",
+    "lifecycle": "LIVE",
+    "age_seconds": 0.0,
+    "annotations": [
+      "PROBE_UNAVAILABLE"
+    ]
+  }
+]

@@ -1,0 +1,74 @@
+test_B10_instance_distinction_unresolved_unknown (test_psp2.T_B_AnswerKey.test_B10_instance_distinction_unresolved_unknown) ... <home>\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py:579: ResourceWarning: unclosed file <_io.TextIOWrapper name=3 encoding='cp65001'>
+  if method() is not None:
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_B11_class_missing_unknown (test_psp2.T_B_AnswerKey.test_B11_class_missing_unknown) ... ok
+test_B12_declared_read_observed_write (test_psp2.T_B_AnswerKey.test_B12_declared_read_observed_write) ... ok
+test_B13_B14_release_discoverable_and_terminal (test_psp2.T_B_AnswerKey.test_B13_B14_release_discoverable_and_terminal) ... ok
+test_B15_cached_signal_never_input (test_psp2.T_B_AnswerKey.test_B15_cached_signal_never_input) ... ok
+test_B16_project_labels_do_not_gerrymander (test_psp2.T_B_AnswerKey.test_B16_project_labels_do_not_gerrymander) ... ok
+test_B17_B18_declarations_do_not_establish_identity (test_psp2.T_B_AnswerKey.test_B17_B18_declarations_do_not_establish_identity) ... ok
+test_B19_same_basename_different_dirs_no_false_conflict (test_psp2.T_B_AnswerKey.test_B19_same_basename_different_dirs_no_false_conflict) ... ok
+test_B1_read_read_clear (test_psp2.T_B_AnswerKey.test_B1_read_read_clear) ... ok
+test_B20_aliases_no_false_clear (test_psp2.T_B_AnswerKey.test_B20_aliases_no_false_clear) ... ok
+test_B21_conflict_survives_unrelated_unresolved (test_psp2.T_B_AnswerKey.test_B21_conflict_survives_unrelated_unresolved) ... ok
+test_B22_inactive_claim_no_live_effect (test_psp2.T_B_AnswerKey.test_B22_inactive_claim_no_live_effect) ... ok
+test_B23_historical_conflict_present_clear (test_psp2.T_B_AnswerKey.test_B23_historical_conflict_present_clear) ... ok
+test_B24_superseded_review_clear_with_annotation (test_psp2.T_B_AnswerKey.test_B24_superseded_review_clear_with_annotation) ... ok
+test_B25_narrow_clear_after_broad_conflict_both_retained (test_psp2.T_B_AnswerKey.test_B25_narrow_clear_after_broad_conflict_both_retained) ... ok
+test_B26_copied_assertion_no_independence (test_psp2.T_B_AnswerKey.test_B26_copied_assertion_no_independence) ... ok
+test_B2_read_write_conflict (test_psp2.T_B_AnswerKey.test_B2_read_write_conflict) ... ok
+test_B3_write_read_conflict (test_psp2.T_B_AnswerKey.test_B3_write_read_conflict) ... ok
+test_B4_write_write_conflict_with_why (test_psp2.T_B_AnswerKey.test_B4_write_write_conflict_with_why) ... ok
+test_B5_review_current_then_write_conflict (test_psp2.T_B_AnswerKey.test_B5_review_current_then_write_conflict) ... ok
+test_B6_write_then_review_of_current_conflict (test_psp2.T_B_AnswerKey.test_B6_write_then_review_of_current_conflict) ... ok
+test_B7_review_revision_unresolved_unknown (test_psp2.T_B_AnswerKey.test_B7_review_revision_unresolved_unknown) ... ok
+test_B8_identity_unresolved_unknown (test_psp2.T_B_AnswerKey.test_B8_identity_unresolved_unknown) ... ok
+test_B9_distinct_established_clear (test_psp2.T_B_AnswerKey.test_B9_distinct_established_clear) ... ok
+test_ID01_dot_slash (test_psp2.T_ID_Family.test_ID01_dot_slash) ... ok
+test_ID02_dotdot (test_psp2.T_ID_Family.test_ID02_dotdot) ... ok
+test_ID03_absolute (test_psp2.T_ID_Family.test_ID03_absolute) ... ok
+test_ID04_case_variant (test_psp2.T_ID_Family.test_ID04_case_variant) ... ok
+test_ID05_junction (test_psp2.T_ID_Family.test_ID05_junction) ... ok
+test_ID06_hardlink (test_psp2.T_ID_Family.test_ID06_hardlink) ... ok
+test_ID07_symlink (test_psp2.T_ID_Family.test_ID07_symlink) ... skipped 'symlink needs privilege on this box'
+test_ID08_same_string_two_roots_two_files (test_psp2.T_ID_Family.test_ID08_same_string_two_roots_two_files) ... ok
+test_ID09_one_missing_unresolved (test_psp2.T_ID_Family.test_ID09_one_missing_unresolved) ... ok
+test_ID10_two_nonexistent_aliases_path_only (test_psp2.T_ID_Family.test_ID10_two_nonexistent_aliases_path_only) ... ok
+test_KG03_read_mutation_without_ready_not_reclassified (test_psp2.T_KG_Falsifiers.test_KG03_read_mutation_without_ready_not_reclassified) ... ok
+test_KG05_dead_claim_persists_until_operator (test_psp2.T_KG_Falsifiers.test_KG05_dead_claim_persists_until_operator) ... ok
+test_KG09_two_stores_two_worlds (test_psp2.T_KG_Falsifiers.test_KG09_two_stores_two_worlds) ... ok
+test_KG12_precreation_identity_is_path_only (test_psp2.T_KG_Falsifiers.test_KG12_precreation_identity_is_path_only) ... ok
+test_KG13_rename_mid_claim_moved_annotation (test_psp2.T_KG_Falsifiers.test_KG13_rename_mid_claim_moved_annotation) ... ok
+test_KG15_path_stable_replacement (test_psp2.T_KG_Falsifiers.test_KG15_path_stable_replacement) ... ok
+test_M02_release_without_token_refused_and_recorded (test_psp2.T_M_Mechanisms.test_M02_release_without_token_refused_and_recorded) ... ok
+test_M02_same_instance_two_claims_self_overlap (test_psp2.T_M_Mechanisms.test_M02_same_instance_two_claims_self_overlap) ... ok
+test_M02_two_processes_same_actor_label_are_distinct (test_psp2.T_M_Mechanisms.test_M02_two_processes_same_actor_label_are_distinct) ... ok
+test_M04_change_during_live_write_is_inference (test_psp2.T_M_Mechanisms.test_M04_change_during_live_write_is_inference) ... ok
+test_M04_unattributed_change_never_attributed (test_psp2.T_M_Mechanisms.test_M04_unattributed_change_never_attributed) ... ok
+test_M06_every_event_kind_has_a_discovery_row (test_psp2.T_M_Mechanisms.test_M06_every_event_kind_has_a_discovery_row) ... ok
+test_M07_operator_release_closes_with_operator_class (test_psp2.T_M_Mechanisms.test_M07_operator_release_closes_with_operator_class) ... ok
+test_M08_process_gone_gives_unknown_not_conflict (test_psp2.T_M_Mechanisms.test_M08_process_gone_gives_unknown_not_conflict) ... ok
+test_M08_transient_cli_pid_not_probed (test_psp2.T_M_Mechanisms.test_M08_transient_cli_pid_not_probed) ... ok
+test_M10_basis_fields_and_exit_codes (test_psp2.T_M_Mechanisms.test_M10_basis_fields_and_exit_codes) ... ok
+test_M11_intended_overlap_on_non_conflict_only (test_psp2.T_M_Mechanisms.test_M11_intended_overlap_on_non_conflict_only) ... ok
+test_M12_metrics_and_verdict (test_psp2.T_M_Mechanisms.test_M12_metrics_and_verdict) ... ok
+test_chain_verify_and_append_only (test_psp2.T_M_Mechanisms.test_chain_verify_and_append_only) ... ok
+test_R2_baseline_row_guard_direct (test_psp2.T_R2_GrokRegressions.test_R2_baseline_row_guard_direct) ... ok
+test_R2_grok_IN03_IN02_shared_token_two_cli_processes_is_unknown (test_psp2.T_R2_GrokRegressions.test_R2_grok_IN03_IN02_shared_token_two_cli_processes_is_unknown) ... ok
+test_R2_grok_IN06_null_class_direct_insert_is_unknown (test_psp2.T_R2_GrokRegressions.test_R2_grok_IN06_null_class_direct_insert_is_unknown) ... ok
+test_R2_r1_evidence_store_still_verifies (test_psp2.T_R2_GrokRegressions.test_R2_r1_evidence_store_still_verifies) ... ok
+test_R2_restart_continuity_by_token_is_established (test_psp2.T_R2_GrokRegressions.test_R2_restart_continuity_by_token_is_established) ... ok
+test_R2_same_process_same_token_still_self_overlap (test_psp2.T_R2_GrokRegressions.test_R2_same_process_same_token_still_self_overlap) ... ok
+test_R2_shared_token_read_read_still_clear (test_psp2.T_R2_GrokRegressions.test_R2_shared_token_read_read_still_clear) ... ok
+test_WR_annotation_never_changes_color (test_psp2.T_WR_Negatives.test_WR_annotation_never_changes_color) ... ok
+test_WR_no_string_scoped_discovery (test_psp2.T_WR_Negatives.test_WR_no_string_scoped_discovery) ... ok
+test_WR_not_same_is_not_distinct (test_psp2.T_WR_Negatives.test_WR_not_same_is_not_distinct) ... ok
+test_WR_profile_fixed (test_psp2.T_WR_Negatives.test_WR_profile_fixed) ... ok
+test_WR_release_not_hideable (test_psp2.T_WR_Negatives.test_WR_release_not_hideable) ... ok
+test_WR_unknown_never_erases_conflict (test_psp2.T_WR_Negatives.test_WR_unknown_never_erases_conflict) ... ok
+
+----------------------------------------------------------------------
+Ran 66 tests in 2.813s
+
+OK (skipped=1)

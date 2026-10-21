@@ -1,0 +1,9 @@
+{
+  "platform": "win32",
+  "python": "3.11.9",
+  "junction": true,
+  "hardlink": true,
+  "symlink": false,
+  "case_insensitive_fs": true,
+  "file_identity_available": true
+}

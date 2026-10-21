@@ -1,0 +1,203 @@
+{
+  "psp_version": "0.2-r2",
+  "profile": "psp-v0.2-baseline",
+  "evaluation_time": "2026-09-15T18:47:52.627939+00:00",
+  "subject_claim": "823afa7cd9a8",
+  "claim_domain": "store=<home>\\psp\\v0.2\\experiment\\20260915-134752\\psp-v0.2.db; operation=823afa7cd9a8; scope=all participating claims at T=2026-09-15T18:47:52.627939+00:00",
+  "discovery_domain": "all claims in store <home>\\psp\\v0.2\\experiment\\20260915-134752\\psp-v0.2.db, every state, every project/target/actor string",
+  "discovery_rule": "enumerate every CLAIMED row; identity evaluated per candidate by M-03; no representation filter (baseline §4)",
+  "discovery_table": {
+    "LIVE": {
+      "support": [
+        "CLAIMED (own instance token)"
+      ],
+      "defeat": [
+        "RELEASED (own token)",
+        "OPERATOR_RELEASE (operator class)",
+        "instance process gone (host probe) -> UNRESOLVED"
+      ]
+    },
+    "INACTIVE": {
+      "support": [
+        "RELEASED (own token)",
+        "OPERATOR_RELEASE"
+      ],
+      "defeat": [
+        "absence of both -> not INACTIVE"
+      ]
+    },
+    "SAME": {
+      "support": [
+        "file identity equal (stat)",
+        "resolved path equal when neither exists (path-only)"
+      ],
+      "defeat": [
+        "file identity differs"
+      ]
+    },
+    "DISTINCT": {
+      "support": [
+        "file identity differs (both exist)",
+        "resolved path differs when neither exists (path-only)"
+      ],
+      "defeat": [
+        "file identity equal"
+      ]
+    },
+    "CLASS": {
+      "support": [
+        "declared intent (self-state, provisional)",
+        "own READY with changed hash -> WRITE (observed)"
+      ],
+      "defeat": [
+        "observed WRITE over declared READ/REVIEW"
+      ]
+    },
+    "REVISION": {
+      "support": [
+        "sha256 at claim",
+        "sha256 at READY",
+        "sha256 at evaluation"
+      ],
+      "defeat": [
+        "current hash differs from bound hash"
+      ]
+    },
+    "INSTANCE": {
+      "support": [
+        "distinct PSP-minted tokens"
+      ],
+      "defeat": [
+        "same token used concurrently from two live pids -> TOKEN_SHARED"
+      ]
+    }
+  },
+  "candidates_enumerated": 3,
+  "subject": {
+    "actor": "grok",
+    "instance_id": "40270e8a4a2c43399adbe8fa9ffc709f",
+    "op_class": "WRITE",
+    "class_evidence": "declared",
+    "target": "foo/../X.md",
+    "resolved": "<home>\\psp\\v0.2\\experiment\\20260915-134752\\workspace\\x.md",
+    "fileid_at_claim": "<dev>:1688849862718574",
+    "fileid_now": "<dev>:1688849862718574",
+    "revision_at_claim": "afd8039ec74b4030ff0f818b9ab2c61f883fb706e17d0c7dc31f182c5a32a85b",
+    "revision_now": "afd8039ec74b4030ff0f818b9ab2c61f883fb706e17d0c7dc31f182c5a32a85b",
+    "lifecycle": {
+      "state": "LIVE",
+      "evidence": {
+        "rule": "accepted CLAIMED, no RELEASE, no OPERATOR_RELEASE, probe alive",
+        "host": "<host>",
+        "pid": 37000,
+        "pid_kind": "process",
+        "age_seconds": 0.0
+      },
+      "annotations": []
+    },
+    "review_state": null,
+    "relation": "unspecified",
+    "relates_to": null
+  },
+  "observations_admitted": [
+    {
+      "claim_id": "87a62eac5471",
+      "actor": "claude",
+      "instance_id": "858e16cfed8a4f01a83148c78feca0f2",
+      "op_class": "WRITE",
+      "class_evidence": "declared",
+      "lifecycle": "LIVE",
+      "identity": {
+        "relation": "SAME",
+        "evidence_class": "protocol-observation",
+        "rule": "file identity equal"
+      },
+      "same_instance": {
+        "state": "distinct",
+        "rule": "instance tokens differ"
+      },
+      "row": "WRITE/WRITE"
+    }
+  ],
+  "observations_rejected": [
+    {
+      "claim_id": "050046b50186",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    },
+    {
+      "claim_id": "de73272a731c",
+      "reason": "INACTIVE (baseline §18): cannot create live consequence",
+      "identity": "SAME"
+    }
+  ],
+  "established_transitions": [],
+  "lineage": [
+    {
+      "proposition": "subject revision now",
+      "source": "filesystem",
+      "observation": "sha256 at evaluation",
+      "value": "afd8039ec74b4030ff0f818b9ab2c61f883fb706e17d0c7dc31f182c5a32a85b"
+    },
+    {
+      "proposition": "identity",
+      "source": "filesystem",
+      "observation": "realpath+normcase and stat file identity",
+      "transformation": "identity_relation()",
+      "note": "reference strings recorded for display only"
+    },
+    {
+      "proposition": "instance",
+      "source": "PSP-minted token",
+      "observation": "token presented on events",
+      "transformation": "none"
+    },
+    {
+      "proposition": "class",
+      "source": "participant declaration then own READY",
+      "observation": "declared"
+    },
+    {
+      "proposition": "lifecycle",
+      "source": "store events + host process probe",
+      "observation": {
+        "rule": "accepted CLAIMED, no RELEASE, no OPERATOR_RELEASE, probe alive",
+        "host": "<host>",
+        "pid": 37000,
+        "pid_kind": "process",
+        "age_seconds": 0.0
+      }
+    }
+  ],
+  "conflicts": [
+    {
+      "claim_id": "87a62eac5471",
+      "actor": "claude",
+      "instance_id": "858e16cfed8a4f01a83148c78feca0f2",
+      "op_class": "WRITE",
+      "row": "WRITE/WRITE",
+      "lifecycle": {
+        "rule": "accepted CLAIMED, no RELEASE, no OPERATOR_RELEASE, probe alive",
+        "host": "<host>",
+        "pid": 33520,
+        "pid_kind": "process",
+        "age_seconds": 0.3
+      }
+    }
+  ],
+  "unresolved": [],
+  "answer_key_row": "WRITE/WRITE",
+  "annotations": [
+    "HISTORICAL_CONFLICT"
+  ],
+  "signal": "CONFLICT",
+  "enforcement": "none (observational); --enforce-exit not set",
+  "visible_limits": [
+    "discovery = participating claims in this store only; non-participating writers never observed as workers (KG-07)",
+    "instance = token possession, not identity (KG-01, KG-14)",
+    "liveness probe is host-local and pid-based (KG-05)",
+    "class before first observation rests on declared intent (KG-02)",
+    "pre-creation identity rests on path (KG-12)"
+  ],
+  "evaluation_id": 9
+}

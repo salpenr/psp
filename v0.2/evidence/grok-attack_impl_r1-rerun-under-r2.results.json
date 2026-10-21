@@ -1,0 +1,119 @@
+[
+  {
+    "case": "IN-06",
+    "title": "NULL op_class vs WRITE yields CONFLICT not UNKNOWN",
+    "hit": false,
+    "evidence": {
+      "signal": "UNKNOWN",
+      "row": null,
+      "unresolved": [
+        {
+          "proposition": "operation class(deadbeef0001)",
+          "reason": "class not established (baseline \u00a715, B11)"
+        }
+      ],
+      "conflicts": []
+    }
+  },
+  {
+    "case": "IN-01",
+    "title": "CLI claim stays LIVE after CLI pid exits (PROBE_UNAVAILABLE, not INSTANCE_PROCESS_GONE)",
+    "hit": true,
+    "evidence": {
+      "cli_rc": 0,
+      "lifecycle": "LIVE",
+      "annotations": [
+        "PROBE_UNAVAILABLE"
+      ],
+      "signal": "CLEAR"
+    }
+  },
+  {
+    "case": "IN-04",
+    "title": "path-stable replace: current fileid SAME + ARTIFACT_REPLACED (not false DISTINCT)",
+    "hit": false,
+    "evidence": {
+      "signal": "CONFLICT",
+      "annotations": [],
+      "fileid_claim": "<dev>:8162774327063640",
+      "fileid_now": "<dev>:8162774327063640",
+      "conflicts": [
+        {
+          "claim_id": "3f7007888dc3",
+          "actor": "claude",
+          "instance_id": "92531bdf963c48d6a2d8fac3cbe75aec",
+          "op_class": "WRITE",
+          "row": "WRITE/WRITE",
+          "lifecycle": {
+            "rule": "accepted CLAIMED, no RELEASE, no OPERATOR_RELEASE, probe alive",
+            "host": "<host>",
+            "pid": 1548,
+            "pid_kind": "process",
+            "age_seconds": 0.0
+          }
+        }
+      ]
+    }
+  },
+  {
+    "case": "KG-13",
+    "title": "rename: ARTIFACT_MOVED dead; identity UNRESOLVED / UNKNOWN (freeze-recorded)",
+    "hit": true,
+    "evidence": {
+      "signal": "CLEAR",
+      "annotations": [
+        "CHANGE_DURING_LIVE_WRITE"
+      ],
+      "unresolved": [],
+      "fileid_now": null
+    }
+  },
+  {
+    "case": "IN-03",
+    "title": "same token via two CLI processes: TOKEN_SHARED does not fire (transient pids)",
+    "hit": true,
+    "evidence": {
+      "n_claims": 2,
+      "signal": "UNKNOWN",
+      "annotations": [
+        "PROBE_UNAVAILABLE"
+      ],
+      "same_instance": {
+        "state": "unresolved",
+        "rule": "same token, but a transient (CLI) pid cannot tie possession to a process (IN-01)"
+      }
+    }
+  },
+  {
+    "case": "S23",
+    "title": "LIVE REVIEW + LIVE WRITE same artifact = CONFLICT owner sentence",
+    "hit": true,
+    "evidence": {
+      "signal": "CONFLICT",
+      "row": "WRITE/REVIEW (owner \u00a723: LIVE WRITE on same artifact alters the current reviewed state)"
+    }
+  },
+  {
+    "case": "KG-09",
+    "title": "two stores, same file: each CLEAR (honest, silent beyond store= in domain)",
+    "hit": true,
+    "evidence": {
+      "s1": "CLEAR",
+      "s2": "CLEAR",
+      "d1": "store=<home>\\AppData\\Local\\Temp\\tmpy8k41y9c\\a.db; operation=d0e8119c527c",
+      "d2": "store=<home>\\AppData\\Local\\Temp\\tmpy8k41y9c\\b.db; operation=daf2eb4d93cf"
+    }
+  },
+  {
+    "case": "IN-02",
+    "title": "same token REVIEW then WRITE: SELF_OVERLAP, not CONFLICT row",
+    "hit": true,
+    "evidence": {
+      "signal": "CLEAR",
+      "annotations": [
+        "SELF_OVERLAP"
+      ],
+      "conflicts": []
+    }
+  }
+]

@@ -1,0 +1,185 @@
+{
+  "env": {
+    "python": "3.11.9",
+    "platform": "win32",
+    "psp2_version": "0.2-r1",
+    "profile": "psp-v0.2-baseline",
+    "store": "<home>\\psp\\v0.2\\experiment\\20260915-133136\\psp-v0.2.db",
+    "workspace": "<home>\\psp\\v0.2\\experiment\\20260915-133136\\workspace",
+    "run": "20260915-133136"
+  },
+  "results": [
+    {
+      "case": "01-success-write-write-0-X_md",
+      "expected": "CONFLICT",
+      "produced": "CONFLICT",
+      "pass": true,
+      "row": "WRITE/WRITE",
+      "unresolved": [],
+      "annotations": [],
+      "conflicts_with": [
+        "claude/WRITE/766265d12a28"
+      ],
+      "evaluation_id": 3,
+      "basis_file": "01-success-write-write-0-X_md.basis.json",
+      "note": "grok reference 'X.md'; both workers are live separate processes",
+      "why_complete": true
+    },
+    {
+      "case": "01-success-write-write-1-__X_md",
+      "expected": "CONFLICT",
+      "produced": "CONFLICT",
+      "pass": true,
+      "row": "WRITE/WRITE",
+      "unresolved": [],
+      "annotations": [
+        "HISTORICAL_CONFLICT"
+      ],
+      "conflicts_with": [
+        "claude/WRITE/766265d12a28"
+      ],
+      "evaluation_id": 6,
+      "basis_file": "01-success-write-write-1-__X_md.basis.json",
+      "note": "grok reference './X.md'; both workers are live separate processes",
+      "why_complete": true
+    },
+    {
+      "case": "01-success-write-write-2-foo____X_md",
+      "expected": "CONFLICT",
+      "produced": "CONFLICT",
+      "pass": true,
+      "row": "WRITE/WRITE",
+      "unresolved": [],
+      "annotations": [
+        "HISTORICAL_CONFLICT"
+      ],
+      "conflicts_with": [
+        "claude/WRITE/766265d12a28"
+      ],
+      "evaluation_id": 9,
+      "basis_file": "01-success-write-write-2-foo____X_md.basis.json",
+      "note": "grok reference 'foo/../X.md'; both workers are live separate processes",
+      "why_complete": true
+    },
+    {
+      "case": "02-control-read-read",
+      "expected": "CLEAR",
+      "produced": "CLEAR",
+      "pass": true,
+      "row": "no baseline conflict row TRUE; CLEAR conditions 1-10 satisfied",
+      "unresolved": [],
+      "annotations": [
+        "HISTORICAL_CONFLICT"
+      ],
+      "conflicts_with": [],
+      "evaluation_id": 14,
+      "basis_file": "02-control-read-read.basis.json",
+      "note": "HISTORICAL_CONFLICT expected in annotations (B23)"
+    },
+    {
+      "case": "03-uncertainty-identity",
+      "expected": "UNKNOWN",
+      "produced": "UNKNOWN",
+      "pass": true,
+      "row": null,
+      "unresolved": [
+        "SAME/DISTINCT(41e87b9d2c8a,5a3ca080ed5f)"
+      ],
+      "annotations": [],
+      "conflicts_with": [],
+      "evaluation_id": 19,
+      "basis_file": "03-uncertainty-identity.basis.json",
+      "note": "SAME/DISTINCT unresolved: exactly one reference exists"
+    },
+    {
+      "case": "04-uncertainty-dead-claimant",
+      "expected": "UNKNOWN",
+      "produced": "UNKNOWN",
+      "pass": true,
+      "row": null,
+      "unresolved": [
+        "LIVE(95a6e2ca7056)"
+      ],
+      "annotations": [
+        "HISTORICAL_CONFLICT",
+        "INSTANCE_PROCESS_GONE"
+      ],
+      "conflicts_with": [],
+      "evaluation_id": 24,
+      "basis_file": "04-uncertainty-dead-claimant.basis.json",
+      "note": "claude's claiming process exited; KG-05 exposure"
+    },
+    {
+      "case": "05-after-operator-release",
+      "expected": "CLEAR",
+      "produced": "CLEAR",
+      "pass": true,
+      "row": "no baseline conflict row TRUE; CLEAR conditions 1-10 satisfied",
+      "unresolved": [],
+      "annotations": [
+        "HISTORICAL_CONFLICT"
+      ],
+      "conflicts_with": [],
+      "evaluation_id": 26,
+      "basis_file": "05-after-operator-release.basis.json",
+      "note": "operator release (KG-04) closed the dead claim; HISTORICAL_CONFLICT expected"
+    },
+    {
+      "case": "06-review-then-write-owner-s23",
+      "expected": "CONFLICT",
+      "produced": "CONFLICT",
+      "pass": true,
+      "row": "WRITE/REVIEW (owner \u00a723: LIVE WRITE on same artifact alters the current reviewed state)",
+      "unresolved": [],
+      "annotations": [
+        "HISTORICAL_CONFLICT"
+      ],
+      "conflicts_with": [
+        "grok/REVIEW/f70a2c57b5c5"
+      ],
+      "evaluation_id": 30,
+      "basis_file": "06-review-then-write-owner-s23.basis.json",
+      "note": "review bound to current revision; T-B6"
+    },
+    {
+      "case": "07-superseded-review",
+      "expected": "CLEAR",
+      "produced": "CLEAR",
+      "pass": true,
+      "row": "no baseline conflict row TRUE; CLEAR conditions 1-10 satisfied",
+      "unresolved": [],
+      "annotations": [
+        "HISTORICAL_CONFLICT",
+        "SUPERSEDED_REVIEW"
+      ],
+      "conflicts_with": [],
+      "evaluation_id": 33,
+      "basis_file": "07-superseded-review.basis.json",
+      "note": "B24: CLEAR + SUPERSEDED_REVIEW; no live writer"
+    },
+    {
+      "case": "08-cli-transient-pids",
+      "expected": "CONFLICT",
+      "produced": "CONFLICT",
+      "pass": true,
+      "row": "WRITE/WRITE",
+      "unresolved": [],
+      "annotations": [
+        "HISTORICAL_CONFLICT",
+        "PROBE_UNAVAILABLE"
+      ],
+      "conflicts_with": [
+        "claude/WRITE/a4caaf07f87d"
+      ],
+      "evaluation_id": 38,
+      "basis_file": "08-cli-transient-pids.basis.json",
+      "note": "IN-01: CLI pids are transient, probe unavailable, LIVE by rule; exit code 0 (observational)",
+      "cli_exit_code": 0
+    }
+  ],
+  "verify": {
+    "ok": true,
+    "events": 38,
+    "head": "b662ef2750d3b1118c2eae74f7b5fa52c9769a1852b538f518a01788e1eaae36"
+  }
+}
